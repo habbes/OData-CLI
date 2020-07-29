@@ -19,7 +19,7 @@ param(
  $parametersFilePath = "C:\armdeps\azuredeploy.parameters.json",
 
  [string]
- $projectFilePath = "C:\newcode\ODataApiService\EdmObjectsGenerator.zip",
+ $projectFilePath = "C:\newcode\ODataApiService\EdmObjectsGenerator.zip"
 
 )
 
