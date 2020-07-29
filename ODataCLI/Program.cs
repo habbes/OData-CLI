@@ -2,8 +2,10 @@
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.IO;
+using System.Linq;
 using System.Management.Automation;
 using System.Threading.Tasks;
+using LibGit2Sharp;
 
 namespace ODataCLI
 {
@@ -57,7 +59,20 @@ namespace ODataCLI
 
             string projectFilePath = "";
 
-            // Clone the repo https://github.com/habbes/ODataApiServiceHackathon.git
+            Console.WriteLine("Cloning from git .....");
+            string _args = "https://github.com/habbes/ODataApiServiceHackathon.git";
+
+            string tempWorkingDir = Path.GetTempPath() + appServiceName;
+            Console.WriteLine(tempWorkingDir);
+
+            while (Directory.Exists(tempWorkingDir))
+            {
+                tempWorkingDir += "-"+RandomString(3);
+            }
+            Repository.Clone(_args, tempWorkingDir);
+
+            Console.WriteLine($"Cleaning directory: {tempWorkingDir}");
+            DeleteDirectory(tempWorkingDir);
 
             // Pass the csdl file to a folder in the cloned repo
 
@@ -78,5 +93,41 @@ namespace ODataCLI
                         .Invoke();
             }
         }
+
+        private static Random random = new Random();
+
+        private static string RandomString(int length)
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+
+        private static void DeleteDirectory(string directoryPath)
+        {
+            if (!Directory.Exists(directoryPath))
+            {
+                return;
+            }
+
+            var files = Directory.GetFiles(directoryPath);
+            var directories = Directory.GetDirectories(directoryPath);
+
+            foreach (var file in files)
+            {
+                File.SetAttributes(file, FileAttributes.Normal);
+                File.Delete(file);
+            }
+
+            foreach (var dir in directories)
+            {
+                DeleteDirectory(dir);
+            }
+
+            File.SetAttributes(directoryPath, FileAttributes.Normal);
+
+            Directory.Delete(directoryPath, false);
+        }
+
     }
 }
