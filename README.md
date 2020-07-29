@@ -26,4 +26,4 @@ Upon successful deployment the application gives out a url for the service id.
 2. [Generate the client](https://devblogs.microsoft.com/odata/odata-connected-service-0-4-0-release/) code using the OData Connected service. 
 3. Enjoy. 
 
-For other languages and platforms kindly consult [Odata.org](https://odata.org)
+For other languages and platforms kindly consult [Odata.org/Libraries](https://www.odata.org/libraries/)
