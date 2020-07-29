@@ -57,7 +57,6 @@ namespace ODataCLI
                 Console.WriteLine($"Csdl Path: {csdl.FullName}");
             }
 
-            string projectFilePath = "";
 
             Console.WriteLine("Cloning from git .....");
             string _args = "https://github.com/habbes/ODataApiServiceHackathon.git";
@@ -71,27 +70,32 @@ namespace ODataCLI
             }
             Repository.Clone(_args, tempWorkingDir);
 
-            Console.WriteLine($"Cleaning directory: {tempWorkingDir}");
-            DeleteDirectory(tempWorkingDir);
+            var projectPreparer = new ProjectPreparer(tempWorkingDir, csdl.FullName, appServiceName);
+            projectPreparer.Prepare();
 
-            // Pass the csdl file to a folder in the cloned repo
+            var parametersJsonPath = projectPreparer.ParamsPath;
+            var projectZipPath = projectPreparer.ZipPath;
 
-            // Save the necessary items to the cloned folder
-
-            // Zip the repo
+            Console.WriteLine($"JsonParams {parametersJsonPath}");
+            Console.WriteLine($"ProjectZip {projectZipPath}");
 
             //Execute the powershell script
             using (PowerShell PowerShellInst = PowerShell.Create())
             {
-                //string path = System.IO.Path.GetDirectoryName(@"C:\Temp\") + "\\Get-EventLog.ps1";
                 string path = @"deploy.ps1";
                 if (!string.IsNullOrEmpty(path))
                     PowerShellInst
                         .AddScript(File.ReadAllText(path))
                         .AddParameter("subscriptionId", subscriptionId)
-                        .AddParameter("projectFilePath", projectFilePath)
+                        .AddParameter("projectFilePath", projectZipPath)
+                        .AddParameter("parametersFilePath", parametersJsonPath)
+                        .AddParameter("resourceGroupName", $"rg_{appServiceName}")
+                        .AddParameter("deploymentName", $"dpl_{appServiceName}")
                         .Invoke();
             }
+
+            Console.WriteLine($"Cleaning directory: {tempWorkingDir}");
+            DeleteDirectory(tempWorkingDir);
         }
 
         private static Random random = new Random();
