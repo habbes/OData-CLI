@@ -58,6 +58,7 @@ if(Test-Path $parametersFilePath) {
         if ($key -eq "wName") {
             $AppName = $outputs.Outputs[$key].value;
             Write-Host "App Service Name '$AppName'";
+            az login
             az webapp config appsettings set --resource-group $resourceGroupName --name $AppName --settings SCM_DO_BUILD_DURING_DEPLOYMENT=true
             az webapp deployment source config-zip -g $resourceGroupName -n $AppName --src $projectFilePath
         }
