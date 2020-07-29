@@ -4,7 +4,7 @@
     "parameters": {
         "skuName": {
             "type": "string",
-            "defaultValue": "D1",
+            "defaultValue": "B2",
             "allowedValues": [
                 "F1",
                 "D1",
@@ -50,13 +50,34 @@
             "metadata": {
                 "description": "Location for all resources."
             }
+        },
+        "siteName": {
+            "type": "string",
+            "defaultValue": "[concat('webappfirstappy-', uniqueString(resourceGroup().id))]",
+            "metadata": {
+                "description": "Application name"
+            }
+        },
+        "databaseName": {
+            "type": "string",
+            "defaultValue": "[concat('dbfirstappy-', uniqueString(resourceGroup().id))]",
+            "metadata": {
+                "description": "database name"
+            }
+        },
+        "sqlServerName": {
+            "type": "string",
+            "defaultValue": "[concat('sqlsfirstwebapp-', uniqueString(resourceGroup().id))]",
+            "metadata": {
+                "description": "sql server name"
+            }
         }
     },
     "variables": {
         "hostingPlanName": "[concat('hostingplan', uniqueString(resourceGroup().id))]",
-        "webSiteName": "[concat('webSite', uniqueString(resourceGroup().id))]",
-        "sqlserverName": "[concat('sqlserver', uniqueString(resourceGroup().id))]",
-        "databaseName": "ODataDbContext"
+        "webSiteName": "[parameters('siteName')]",
+        "sqlserverName": "[parameters('sqlServerName')]",
+        "databaseName": "[parameters('databaseName')]"
     },
     "resources": [
         {
@@ -159,7 +180,7 @@
     "outputs": {
         "ResourceId": {
             "type": "string",
-            "value": "[concat('https://',reference(resourceId('Microsoft.Web/sites', variables('webSiteName')), '2018-02-01').defaultHostName,'/odata')]"
+            "value": "[concat('https://',reference(resourceId('Microsoft.Web/sites', variables('webSiteName')), '2018-02-01').defaultHostName,'/odata/')]"
         },
         "wName": {
             "type": "string",

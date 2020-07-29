@@ -4,23 +4,23 @@ param(
  $subscriptionId,
 
  [string]
- $resourceGroupName = "ODATASAMPLERGROUP36",
+ $resourceGroupName = "ODATASAMPLERGROUP49",
 
  [string]
  $resourceGroupLocation = "Central US",
 
  [string]
- $deploymentName = "ODATASAMPLEDEPLOYMENT36",
+ $deploymentName = "ODATASAMPLEDEPLOYMENT49",
 
  [string]
- $templateFilePath = "azuredeploy.json",
+ $templateFilePath = "C:\armdeps\azuredeploy.json",
 
  [string]
- $parametersFilePath = "azuredeploy.parameters.json",
+ $parametersFilePath = "C:\armdeps\azuredeploy.parameters.json",
 
- [Parameter(Mandatory=$True)]
  [string]
- $projectFilePath
+ $projectFilePath = "C:\newcode\ODataApiService\EdmObjectsGenerator.zip",
+
 )
 
 #******************************************************************************
@@ -51,7 +51,24 @@ else{
 # Start the deployment
 Write-Host "Starting deployment...";
 if(Test-Path $parametersFilePath) {
-    New-AzureRmResourceGroupDeployment -ResourceGroupName $resourceGroupName -TemplateFile $templateFilePath -TemplateParameterFile $parametersFilePath;   
+    $outputs = New-AzureRmResourceGroupDeployment -ResourceGroupName $resourceGroupName -TemplateFile $templateFilePath -TemplateParameterFile $parametersFilePath;  
+    foreach ($key in $outputs.Outputs.keys) {
+        if ($key -eq "wName") {
+            $AppName = $outputs.Outputs[$key].value;
+            Write-Host "App Service Name '$AppName'";
+            az webapp config appsettings set --resource-group $resourceGroupName --name $AppName --settings SCM_DO_BUILD_DURING_DEPLOYMENT=true
+            az webapp deployment source config-zip -g $resourceGroupName -n $AppName --src $projectFilePath
+        }
+        else 
+        {
+            if($key -eq "ResourceId")
+            {
+                $AppURL = $outputs.Outputs[$key].value;            
+            }        
+        }
+    }
+
+    Write-Host "The SAMPLE ODATA URL IS: '$AppURL'"; 
 } 
 else {
     New-AzureRmResourceGroupDeployment -ResourceGroupName $resourceGroupName -TemplateFile $templateFilePath;

@@ -5,8 +5,18 @@
     "sqlAdministratorLogin": {
       "value": "GEN-UNIQUE-8"
     },
-    "sqlAdministratorLoginPassword": {		
-      "value": "Hacking@{2020}Pressure"		
-    }		
+    "sqlAdministratorLoginPassword": {
+      "value": "Hacking@{2020}Pressure12reYT"
+    },
+    "siteName": {
+      "value": "websiteappyfirstonetwo34redYH"
+    },
+    "sqlServerName": {
+      "value": "sqlfirsttwo2323323weddsdsdTY"
+    },
+    "databaseName": {
+      "value": "sqlDatabasefirstonetwtrdffdR"
+    }
+    
   }
 }
