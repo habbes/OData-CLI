@@ -39,11 +39,11 @@ namespace ODataCLI
                 },
             };
 
-            rootCommand.Handler = CommandHandler.Create<FileInfo, string>(Bootstrap);
+            rootCommand.Handler = CommandHandler.Create<FileInfo, string, string>(Bootstrap);
             await rootCommand.InvokeAsync(args);
         }
 
-        static void Bootstrap(FileInfo csdl, string subscriptionId)
+        static void Bootstrap(FileInfo csdl, string subscriptionId, string appServiceName)
         {
             if (subscriptionId != null)
             {
@@ -58,15 +58,14 @@ namespace ODataCLI
             string projectFilePath = "";
 
             // Clone the repo https://github.com/habbes/ODataApiServiceHackathon.git
-            string _args = "https://github.com/habbes/ODataApiServiceHackathon.git";
-            Process.StartProcess("git clone ", _args);
+
             // Pass the csdl file to a folder in the cloned repo
 
-            //  Save the connection string <MyProject>
+            // Save the necessary items to the cloned folder
 
             // Zip the repo
 
-            //var script = Assembly.GetExecutingAssembly().GetManifestResourceStream("deploy.ps1");
+            //Execute the powershell script
             using (PowerShell PowerShellInst = PowerShell.Create())
             {
                 //string path = System.IO.Path.GetDirectoryName(@"C:\Temp\") + "\\Get-EventLog.ps1";
