@@ -29,6 +29,8 @@ param(
 #******************************************************************************
 $ErrorActionPreference = "Stop"
 
+Import-Module AzureRM.Profile
+
 # sign in
 Write-Host "Logging in...";
 Login-AzureRmAccount;

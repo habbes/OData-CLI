@@ -20,7 +20,7 @@ namespace ODataCLI
         public string ZipPath { get; private set; }
         public string ParamsPath { get; private set; }
 
-        public string SqlServerName { get { return $"sqlServer_{siteName}"; } }
+        public string SqlServerName { get { return $"sqlserver{siteName}"; } }
 
         private string ConnectionString
         {
@@ -43,7 +43,7 @@ namespace ODataCLI
             this.sourceCsdlFile = sourceCsdlFile;
             this.siteName = siteName;
             this.dbUser = "HackathonUser";
-            this.dbPassword = "HackathonPassword";
+            this.dbPassword = "Hacking@{2020}Pressure12reYT";
 
         }
 
@@ -74,11 +74,11 @@ namespace ODataCLI
                 ContentVersion = "1.0.0.0",
                 Parameters = new InnerParameters()
                 {
-                    SiteName = siteName,
-                    SqlServerName = SqlServerName,
-                    DatabaseName = siteName,
-                    SqlAdminstratorLogin = dbUser,
-                    SqlAdminstratorLoginPassword = dbPassword
+                    SiteName = new ParameterValue(siteName),
+                    SqlServerName = new ParameterValue(SqlServerName),
+                    DatabaseName = new ParameterValue(siteName),
+                    SqlAdminstratorLogin = new ParameterValue(dbUser),
+                    SqlAdminstratorLoginPassword = new ParameterValue(dbPassword)
                 }
             };
 
