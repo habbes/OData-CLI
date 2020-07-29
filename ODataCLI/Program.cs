@@ -68,6 +68,8 @@ namespace ODataCLI
             {
                 tempWorkingDir += "-"+RandomString(3);
             }
+            Console.WriteLine($"Cloning to {tempWorkingDir}");
+
             Repository.Clone(_args, tempWorkingDir);
 
             var projectPreparer = new ProjectPreparer(tempWorkingDir, csdl.FullName, appServiceName);
@@ -82,7 +84,10 @@ namespace ODataCLI
             //Execute the powershell script
             using (PowerShell PowerShellInst = PowerShell.Create())
             {
-                string path = @"deploy.ps1";
+
+                //string path = System.IO.Path.GetDirectoryName(@"C:\Temp\") + "\\Get-EventLog.ps1";
+                string path = @"ODataCLI\deploy.ps1";
+
                 if (!string.IsNullOrEmpty(path))
                     PowerShellInst
                         .AddScript(File.ReadAllText(path))
