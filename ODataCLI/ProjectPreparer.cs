@@ -61,6 +61,8 @@ namespace ODataCLI
         public void CreateZip()
         {
             ZipPath = Path.GetTempFileName();
+            // delete the created empty temp file so we can write to that path without conflict
+            File.Delete(ZipPath);
             ZipFile.CreateFromDirectory(projectRoot, ZipPath);
         }
 
