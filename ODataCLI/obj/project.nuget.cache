@@ -1,0 +1,24 @@
+{
+  "version": 2,
+  "dgSpecHash": "+1MP0k6GfK90jC4xzgmtNxB/HYFgQcBG0orbPrJp2fz/s1++8ByJ2NF6tnnlzKDDqFZxQ26ea4dtMZIDf7e3IA==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\clhabins\\source\\repos\\OData-CLI\\ODataCLI\\ODataCLI.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\clhabins\\.nuget\\packages\\microsoft.csharp\\4.4.1\\microsoft.csharp.4.4.1.nupkg.sha512",
+    "C:\\Users\\clhabins\\.nuget\\packages\\microsoft.powershell.5.referenceassemblies\\1.1.0\\microsoft.powershell.5.referenceassemblies.1.1.0.nupkg.sha512",
+    "C:\\Users\\clhabins\\.nuget\\packages\\system.commandline\\2.0.0-beta1.20371.2\\system.commandline.2.0.0-beta1.20371.2.nupkg.sha512",
+    "C:\\Users\\clhabins\\.nuget\\packages\\system.memory\\4.5.4\\system.memory.4.5.4.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'Microsoft.PowerShell.5.ReferenceAssemblies 1.1.0' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8' instead of the project target framework '.NETCoreApp,Version=v3.1'. This package may not be fully compatible with your project.",
+      "libraryId": "Microsoft.PowerShell.5.ReferenceAssemblies",
+      "targetGraphs": [
+        ".NETCoreApp,Version=v3.1"
+      ]
+    }
+  ]
+}
