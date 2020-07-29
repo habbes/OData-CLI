@@ -21,18 +21,29 @@ namespace ODataCLI
     class InnerParameters
     {
         [JsonPropertyName("sqlAdministratorLogin")]
-        public string SqlAdminstratorLogin { get; set; }
+        public ParameterValue SqlAdminstratorLogin { get; set; }
 
         [JsonPropertyName("sqlAdministratorLoginPassword")]
-        public string SqlAdminstratorLoginPassword { get; set; }
+        public ParameterValue SqlAdminstratorLoginPassword { get; set; }
 
         [JsonPropertyName("siteName")]
-        public string SiteName { get; set; }
+        public ParameterValue SiteName { get; set; }
 
         [JsonPropertyName("sqlServerName")]
-        public string SqlServerName { get; set; }
+        public ParameterValue SqlServerName { get; set; }
 
         [JsonPropertyName("databaseName")]
-        public string DatabaseName { get; set; }
+        public ParameterValue DatabaseName { get; set; }
+    }
+
+    class ParameterValue
+    {
+        public ParameterValue(string value)
+        {
+            Value = value;
+        }
+
+        [JsonPropertyName("value")]
+        public string Value { get; set; }
     }
 }

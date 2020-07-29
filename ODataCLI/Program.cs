@@ -57,7 +57,6 @@ namespace ODataCLI
                 Console.WriteLine($"Csdl Path: {csdl.FullName}");
             }
 
-
             Console.WriteLine("Cloning from git .....");
             string _args = "https://github.com/habbes/ODataApiServiceHackathon.git";
 
@@ -89,14 +88,27 @@ namespace ODataCLI
                 string path = @"ODataCLI\deploy.ps1";
 
                 if (!string.IsNullOrEmpty(path))
-                    PowerShellInst
-                        .AddScript(File.ReadAllText(path))
-                        .AddParameter("subscriptionId", subscriptionId)
-                        .AddParameter("projectFilePath", projectZipPath)
-                        .AddParameter("parametersFilePath", parametersJsonPath)
-                        .AddParameter("resourceGroupName", $"rg_{appServiceName}")
-                        .AddParameter("deploymentName", $"dpl_{appServiceName}")
-                        .Invoke();
+                {
+                    //PowerShellInst
+                    ////.AddScript("Set-ExecutionPolicy RemoteSigned")
+                    //.AddScript(File.ReadAllText(path))
+                    //.AddParameter("subscriptionId", subscriptionId)
+                    //.AddParameter("projectFilePath", projectZipPath)
+                    //.AddParameter("parametersFilePath", parametersJsonPath)
+                    //.AddParameter("resourceGroupName", $"rg_{appServiceName}")
+                    //.AddParameter("deploymentName", $"dpl_{appServiceName}")
+                    //.Invoke(new[] { "Set - ExecutionPolicy Unrestricted - Scope Process" });
+
+                    //var cmd = "powershell -ExecutionPolicy RemoteSigned -File \"deploy.ps1\" %*";
+
+                    var args = $"--subscription {subscriptionId} --projectFilePath {projectZipPath} --parametersFilePath {parametersJsonPath} --resourceGroupName rg{appServiceName} --deploymentName dpl_{appServiceName} --templateFilePath ODataCLI\\azuredeploy.json";
+                    Process.ExecuteAsync("powershell", $" -ExecutionPolicy RemoteSigned -File \"ODataCLI\\deploy.ps1\" {args}", Environment.CurrentDirectory, stdOut =>
+                    {
+                        Console.WriteLine(stdOut);
+                    }, stdErr => {
+                        Console.Error.WriteLine(stdErr);
+                    }).Wait();
+                }
             }
 
             Console.WriteLine($"Cleaning directory: {tempWorkingDir}");
