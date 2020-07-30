@@ -20,14 +20,14 @@ namespace ODataCLI
                 Console.WriteLine("-------------");
                 Console.WriteLine();
                 Console.WriteLine("OPTIONS");
-                Console.WriteLine("--csdl <Path to metadata file>");
+                Console.WriteLine("--schema <Path to xml schema file>");
                 Console.WriteLine("--subscriptionId <The Azure Subscription Id>");
                 Console.WriteLine("--appServiceName <The App Service Name.>");
                 return;
             }
             var rootCommand = new RootCommand("Odata CLI Tool to bootstrap an Odata service")
             {
-                new Option(new string[] {"--csdl", "--metadata"}, "The path to the metadata file.")
+                new Option(new string[] {"--csdl", "--metadata", "--schema"}, "The path to the metadata file.")
                 {
                     Argument = new Argument<FileInfo>()
                 },
@@ -54,20 +54,21 @@ namespace ODataCLI
 
             if (csdl != null)
             {
-                Console.WriteLine($"Csdl Path: {csdl.FullName}");
+                Console.WriteLine($"Schema Path: {csdl.FullName}");
             }
 
-            Console.WriteLine("Cloning from git .....");
+            Console.WriteLine("Preparing your API service...");
+            // Console.WriteLine("Cloning from git .....");
             string _args = "https://github.com/habbes/ODataApiServiceHackathon.git";
 
             string tempWorkingDir = Path.GetTempPath() + appServiceName;
-            Console.WriteLine(tempWorkingDir);
+            // Console.WriteLine(tempWorkingDir);
 
             while (Directory.Exists(tempWorkingDir))
             {
                 tempWorkingDir += "-"+RandomString(3);
             }
-            Console.WriteLine($"Cloning to {tempWorkingDir}");
+            // Console.WriteLine($"Cloning to {tempWorkingDir}");
 
             Repository.Clone(_args, tempWorkingDir);
 
@@ -77,8 +78,8 @@ namespace ODataCLI
             var parametersJsonPath = projectPreparer.ParamsPath;
             var projectZipPath = projectPreparer.ZipPath;
 
-            Console.WriteLine($"JsonParams {parametersJsonPath}");
-            Console.WriteLine($"ProjectZip {projectZipPath}");
+            // Console.WriteLine($"JsonParams {parametersJsonPath}");
+            // Console.WriteLine($"ProjectZip {projectZipPath}");
 
             //Execute the powershell script
             using (PowerShell PowerShellInst = PowerShell.Create())
@@ -111,7 +112,7 @@ namespace ODataCLI
                 }
             }
 
-            Console.WriteLine($"Cleaning directory: {tempWorkingDir}");
+            // Console.WriteLine($"Cleaning directory: {tempWorkingDir}");
             DeleteDirectory(tempWorkingDir);
         }
 
