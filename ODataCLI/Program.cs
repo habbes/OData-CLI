@@ -3,7 +3,6 @@ using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.IO;
 using System.Linq;
-using System.Management.Automation;
 using System.Threading.Tasks;
 using LibGit2Sharp;
 
@@ -20,14 +19,14 @@ namespace ODataCLI
                 Console.WriteLine("-------------");
                 Console.WriteLine();
                 Console.WriteLine("OPTIONS");
-                Console.WriteLine("--csdl <Path to metadata file>");
+                Console.WriteLine("--schema <Path to xml schema file>");
                 Console.WriteLine("--subscriptionId <The Azure Subscription Id>");
-                Console.WriteLine("--appServiceName <The App Service Name.>");
+                Console.WriteLine("--app <The name of the app service to create.>");
                 return;
             }
             var rootCommand = new RootCommand("Odata CLI Tool to bootstrap an Odata service")
             {
-                new Option(new string[] {"--csdl", "--metadata"}, "The path to the metadata file.")
+                new Option(new string[] {"--csdl", "--metadata", "--schema"}, "The path to the xml schema file.")
                 {
                     Argument = new Argument<FileInfo>()
                 },
@@ -35,7 +34,7 @@ namespace ODataCLI
                 {
                     Argument = new Argument<string>()
                 },
-                new Option(new string[] { "--appServiceName", "--app" }, "The App Service Name.")
+                new Option(new string[] { "--appServiceName", "--app" }, "The name of the App Service to create.")
                 {
                     Argument = new Argument<string>()
                 },
@@ -54,20 +53,23 @@ namespace ODataCLI
 
             if (csdl != null)
             {
-                Console.WriteLine($"Csdl Path: {csdl.FullName}");
+                Console.WriteLine($"Schema Path: {csdl.FullName}");
             }
 
-            Console.WriteLine("Cloning from git .....");
+            if (appServiceName != null)
+            {
+                Console.WriteLine($"App service name: {appServiceName}");
+            }
+
+            Console.WriteLine("Preparing your API service...");
             string _args = "https://github.com/habbes/ODataApiServiceHackathon.git";
 
             string tempWorkingDir = Path.GetTempPath() + appServiceName;
-            Console.WriteLine(tempWorkingDir);
 
             while (Directory.Exists(tempWorkingDir))
             {
                 tempWorkingDir += "-"+RandomString(3);
             }
-            Console.WriteLine($"Cloning to {tempWorkingDir}");
 
             Repository.Clone(_args, tempWorkingDir);
 
@@ -77,41 +79,41 @@ namespace ODataCLI
             var parametersJsonPath = projectPreparer.ParamsPath;
             var projectZipPath = projectPreparer.ZipPath;
 
-            Console.WriteLine($"JsonParams {parametersJsonPath}");
-            Console.WriteLine($"ProjectZip {projectZipPath}");
-
+            // We experienced issues using PowerShell, propbably because it's a .Net Framework library
+            // We also had issues related to execution policies
+            // We resorted to call the powershell script from the Process.ExecuteAsync instead
+            // We can restore this (and reinstall the NuGet package) once we figure out how to get it to work
             //Execute the powershell script
-            using (PowerShell PowerShellInst = PowerShell.Create())
+            //using (PowerShell PowerShellInst = PowerShell.Create())
+            //{
+
+            //    //string path = System.IO.Path.GetDirectoryName(@"C:\Temp\") + "\\Get-EventLog.ps1";
+            //    string path = @"ODataCLI\deploy.ps1";
+
+            //    if (!string.IsNullOrEmpty(path))
+            //    {
+            //        PowerShellInst
+            //        //.AddScript("Set-ExecutionPolicy RemoteSigned")
+            //        .AddScript(File.ReadAllText(path))
+            //        .AddParameter("subscriptionId", subscriptionId)
+            //        .AddParameter("projectFilePath", projectZipPath)
+            //        .AddParameter("parametersFilePath", parametersJsonPath)
+            //        .AddParameter("resourceGroupName", $"rg_{appServiceName}")
+            //        .AddParameter("deploymentName", $"dpl_{appServiceName}")
+            //        .Invoke(new[] { "Set - ExecutionPolicy Unrestricted - Scope Process" });
+
+
+            //    }
+            //}
+
+            var args = $"--subscription {subscriptionId} --projectFilePath {projectZipPath} --parametersFilePath {parametersJsonPath} --resourceGroupName rg{appServiceName} --deploymentName dpl_{appServiceName} --templateFilePath ODataCLI\\azuredeploy.json";
+            Process.ExecuteAsync("powershell", $" -ExecutionPolicy RemoteSigned -File \"ODataCLI\\deploy.ps1\" {args}", Environment.CurrentDirectory, stdOut =>
             {
+                Console.WriteLine(stdOut);
+            }, stdErr => {
+                Console.Error.WriteLine(stdErr);
+            }).Wait();
 
-                //string path = System.IO.Path.GetDirectoryName(@"C:\Temp\") + "\\Get-EventLog.ps1";
-                string path = @"ODataCLI\deploy.ps1";
-
-                if (!string.IsNullOrEmpty(path))
-                {
-                    //PowerShellInst
-                    ////.AddScript("Set-ExecutionPolicy RemoteSigned")
-                    //.AddScript(File.ReadAllText(path))
-                    //.AddParameter("subscriptionId", subscriptionId)
-                    //.AddParameter("projectFilePath", projectZipPath)
-                    //.AddParameter("parametersFilePath", parametersJsonPath)
-                    //.AddParameter("resourceGroupName", $"rg_{appServiceName}")
-                    //.AddParameter("deploymentName", $"dpl_{appServiceName}")
-                    //.Invoke(new[] { "Set - ExecutionPolicy Unrestricted - Scope Process" });
-
-                    //var cmd = "powershell -ExecutionPolicy RemoteSigned -File \"deploy.ps1\" %*";
-
-                    var args = $"--subscription {subscriptionId} --projectFilePath {projectZipPath} --parametersFilePath {parametersJsonPath} --resourceGroupName rg{appServiceName} --deploymentName dpl_{appServiceName} --templateFilePath ODataCLI\\azuredeploy.json";
-                    Process.ExecuteAsync("powershell", $" -ExecutionPolicy RemoteSigned -File \"ODataCLI\\deploy.ps1\" {args}", Environment.CurrentDirectory, stdOut =>
-                    {
-                        Console.WriteLine(stdOut);
-                    }, stdErr => {
-                        Console.Error.WriteLine(stdErr);
-                    }).Wait();
-                }
-            }
-
-            Console.WriteLine($"Cleaning directory: {tempWorkingDir}");
             DeleteDirectory(tempWorkingDir);
         }
 

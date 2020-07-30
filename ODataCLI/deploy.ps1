@@ -51,7 +51,7 @@ else{
 }
 
 # Start the deployment
-Write-Host "Starting deployment...";
+Write-Host "Provisioning resources, this might take a while...";
 if(Test-Path $parametersFilePath) {
     $outputs = New-AzureRmResourceGroupDeployment -ResourceGroupName $resourceGroupName -TemplateFile $templateFilePath -TemplateParameterFile $parametersFilePath;  
     foreach ($key in $outputs.Outputs.keys) {
@@ -71,7 +71,7 @@ if(Test-Path $parametersFilePath) {
         }
     }
 
-    Write-Host "The SAMPLE ODATA URL IS: '$AppURL'"; 
+    Write-Host "YOUR API URL IS: '$AppURL'"; 
 } 
 else {
     New-AzureRmResourceGroupDeployment -ResourceGroupName $resourceGroupName -TemplateFile $templateFilePath;
