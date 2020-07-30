@@ -15,7 +15,7 @@ The cli creates a fully functional project that you can deploy on azure to test 
 Clone the project and run the following command.
 
 ```cmd
-dotnet run --project ODataCLI\ODataCLI.csproj --schema "C:\Users\UserName\source\repos\schema.xml" --subscriptionId "huher7y58459hudhuheie5494" --appServiceName "MyOdataService"
+dotnet run --project ODataCLI\ODataCLI.csproj --schema "C:\Users\UserName\source\repos\schema.xml" --subscriptionId "huher7y58459hudhuheie5494" --app "MyOdataService"
 ```
 
 Upon successful deployment the application gives out a url for the service id.
